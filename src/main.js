@@ -6,6 +6,8 @@ import router from './router/router'
 import Element from 'element-ui'
 //导入elm 样式
 import 'element-ui/lib/theme-chalk/index.css'
+// 导入全局样式
+import '../src/style/base.css'
 Vue.config.productionTip = false
 //注册
 Vue.use(Element)
