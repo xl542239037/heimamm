@@ -93,7 +93,7 @@
           <el-input v-model="form.name" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="手机" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off"></el-input>
+          <el-input v-model="form.phone" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="密码" :label-width="formLabelWidth">
           <el-input v-model="form.name" autocomplete="off"></el-input>
@@ -101,7 +101,7 @@
         <el-form-item label="图形码" :label-width="formLabelWidth">
           <el-row>
             <el-col :span="16">
-              <el-input v-model="form.name" autocomplete="off"></el-input>
+              <el-input v-model="form.code" autocomplete="off"></el-input>
             </el-col>
             <el-col :offset="1" :span="7">
               <img
@@ -119,7 +119,7 @@
               <el-input v-model="form.name" autocomplete="off"></el-input>
             </el-col>
             <el-col :span="7" :offset="1">
-              <el-button>获取用户验证码</el-button>
+              <el-button @click="getMessageCode">获取用户验证码</el-button>
             </el-col>
           </el-row>
         </el-form-item>
@@ -163,7 +163,9 @@ export default {
         phone: '',
         password: '',
         captcha: '',
-        checked: false
+        checked: false,
+        //注册验证码
+        code:''
       },
       rules: {
         // 手机号
@@ -250,6 +252,26 @@ export default {
     },
     beforeAvatarUpload(){
 
+    },
+    getMessageCode(){
+      const ref = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/
+      if (!ref.test(this.form.phone)) {
+        return this.$message.error('老铁手机号错误')
+      }
+      if (this.form.code==''||this.form.code.length!=4) {
+        return this.$message.error('老铁手机号错误')
+      }
+      axios({
+        url:process.env.VUE_APP_BASEURL + '/sendsms',
+        method:'post',
+        withCredentials:true,
+        data:{
+          code:this.form.code,
+          phone:this.form.phone
+        }
+      }).then( res => {
+        window.console.log(res)
+      })
     }
   }
 }
