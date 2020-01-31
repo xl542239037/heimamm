@@ -13,7 +13,11 @@
       <el-form :rules="rules" class="login-form" ref="form" :model="form">
         <!-- 手机号 -->
         <el-form-item prop="phone">
-          <el-input placeholder="请输入手机号" v-model="form.phone" prefix-icon="el-icon-user"></el-input>
+          <el-input
+            placeholder="请输入手机号"
+            v-model="form.phone"
+            prefix-icon="el-icon-user"
+          ></el-input>
         </el-form-item>
         <!-- 密码 -->
         <el-form-item prop="password">
@@ -30,11 +34,15 @@
           <el-row>
             <!-- 列 -->
             <el-col :span="18">
-              <el-input placeholder="请输入验证码" v-model="form.captcha" prefix-icon="el-icon-key"></el-input>
+              <el-input
+                placeholder="请输入验证码"
+                v-model="form.captcha"
+                prefix-icon="el-icon-key"
+              ></el-input>
             </el-col>
             <el-col :span="6">
               <!-- 验证码图片 -->
-              <img class="captcha" src="../../assets/captcha.jpg" alt />
+              <img class="captcha" @click="changeCaptcha" :src="captchaURL" alt />
             </el-col>
           </el-row>
         </el-form-item>
@@ -49,11 +57,21 @@
         <!-- 按钮区域 -->
         <el-form-item>
           <el-button type="primary" @click="submitForm">登录</el-button>
-          <el-button @click="dialogFormVisible = true" class="register-button" type="success">注册</el-button>
+          <el-button
+            @click="dialogFormVisible = true"
+            class="register-button"
+            type="success"
+            >注册</el-button
+          >
         </el-form-item>
       </el-form>
     </div>
-    <img class="login-pic" src="../../assets/login_banner_ele.png" alt="" />
+    <img
+      class="login-pic"
+      
+      src="../../assets/login_banner_ele.png"
+      alt=""
+    />
   </div>
 </template>
 
@@ -62,23 +80,23 @@
 export default {
   name: 'login',
   data () {
-     var checkPhone = (rule, value, callback) => {
+    var checkPhone = (rule, value, callback) => {
       if (!value) {
-        return callback(new Error("手机号不能为空"));
+        return callback(new Error('手机号不能为空'))
       } else {
         // 判断手机号的格式
         // 正则
-        const reg = /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/;
+        const reg = /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/
         // 判断是否符合
         // .test(验证的字符串) 返回的是 true 或者false
         if (reg.test(value) == true) {
-          callback();
+          callback()
         } else {
           // 不满足 手机号的格式
-          callback(new Error("老铁，你的手机号写错了噢"));
+          callback(new Error('老铁，你的手机号写错了噢'))
         }
       }
-    };
+    }
     return {
       // 表单的数据
       form: {
@@ -91,7 +109,7 @@ export default {
       },
       rules: {
         // 手机号
-       phone: [{ required: true, validator: checkPhone, trigger: "blur" }],
+        phone: [{ required: true, validator: checkPhone, trigger: 'blur' }],
         // 密码
         password: [
           {
@@ -120,25 +138,28 @@ export default {
             trigger: 'change'
           }
         ]
-      }
+      },
+      captchaURL: process.env.VUE_APP_BASEURL + '/captcha?type=login'
     }
   },
   methods: {
     submitForm () {
-      if(this.form.checked == false){
+      if (this.form.checked == false) {
         this.$message.warning('亲您没勾选')
-      }else {
-        this.$refs.form.validate((valid) => {
+      } else {
+        this.$refs.form.validate(valid => {
           if (valid) {
-           this.$message.warning('登录成功')
+            this.$message.warning('登录成功')
           } else {
             this.$message.error('内容错误')
           }
         })
       }
     },
-    dialogFormVisible(){
-
+    dialogFormVisible () {},
+    changeCaptcha () {
+      this.captchaURL =
+        process.env.VUE_APP_BASEURL + "/captcha?type=login&" + Date.now(); // 时间戳
     }
   }
 }
