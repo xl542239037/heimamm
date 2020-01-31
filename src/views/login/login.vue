@@ -73,7 +73,7 @@
     </div>
     <!-- 注册界面 -->
     <el-dialog title="用户注册" :visible.sync="dialogFormVisible">
-      <el-form :model="form">
+      <el-form :model="regForm">
         <el-form-item label="图像" :label-width="formLabelWidth">
           <el-upload
             class="avatar-uploader"
@@ -87,21 +87,21 @@
           </el-upload>
         </el-form-item>
         <el-form-item label="昵称" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off"></el-input>
+          <el-input v-model="regForm.name" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="邮箱" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off"></el-input>
+          <el-input v-model="regForm.name" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="手机" :label-width="formLabelWidth">
-          <el-input v-model="form.phone" autocomplete="off"></el-input>
+          <el-input v-model="regForm.phone" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="密码" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off"></el-input>
+          <el-input v-model="regForm.name" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="图形码" :label-width="formLabelWidth">
           <el-row>
             <el-col :span="16">
-              <el-input v-model="form.code" autocomplete="off"></el-input>
+              <el-input v-model="regForm.code" autocomplete="off"></el-input>
             </el-col>
             <el-col :offset="1" :span="7">
               <img
@@ -116,7 +116,7 @@
         <el-form-item label="验证码" :label-width="formLabelWidth">
           <el-row>
             <el-col :span="16">
-              <el-input v-model="form.name" autocomplete="off"></el-input>
+              <el-input v-model="regForm.name" autocomplete="off"></el-input>
             </el-col>
             <el-col :span="7" :offset="1">
               <el-button @click="getMessageCode">获取用户验证码</el-button>
@@ -163,9 +163,12 @@ export default {
         phone: '',
         password: '',
         captcha: '',
-        checked: false,
+        checked: false
+      },
+      regForm: {
+        phone: '',
         //注册验证码
-        code:''
+        code: ''
       },
       rules: {
         // 手机号
@@ -206,9 +209,9 @@ export default {
       //注册框宽度
       formLabelWidth: '60px',
       //图像地址
-      imageUrl:'',
+      imageUrl: '',
       //注册验证码
-      regCaptchaUrl: process.env.VUE_APP_BASEURL + '/captcha?type=sendsms',
+      regCaptchaUrl: process.env.VUE_APP_BASEURL + '/captcha?type=sendsms'
     }
   },
   methods: {
@@ -243,34 +246,33 @@ export default {
         process.env.VUE_APP_BASEURL + '/captcha?type=login&' + Date.now() // 时间戳
     },
     //注册界面图形码
-    changeRegCaptcha(){
-      this.regCaptchaUrl = 
-      `${process.env.VUE_APP_BASEURL}/captcha?type=sendsms&${Date.now()}`
+    changeRegCaptcha () {
+      this.regCaptchaUrl = `${
+        process.env.VUE_APP_BASEURL
+      }/captcha?type=sendsms&${Date.now()}`
     },
-    handleAvatarSuccess(){
-
-    },
-    beforeAvatarUpload(){
-
-    },
-    getMessageCode(){
+    handleAvatarSuccess () {},
+    beforeAvatarUpload () {},
+    getMessageCode () {
       const ref = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/
-      if (!ref.test(this.form.phone)) {
+      if (!ref.test(this.regForm.phone)) {
         return this.$message.error('老铁手机号错误')
       }
-      if (this.form.code==''||this.form.code.length!=4) {
-        return this.$message.error('老铁手机号错误')
+      if (this.regForm.code == '' || this.regForm.code.length != 4) {
+        return this.$message.error('老铁验证码错误')
       }
       axios({
-        url:process.env.VUE_APP_BASEURL + '/sendsms',
-        method:'post',
-        withCredentials:true,
-        data:{
-          code:this.form.code,
-          phone:this.form.phone
+        url: process.env.VUE_APP_BASEURL + '/sendsms',
+        method: 'post',
+        withCredentials: true,
+        data: {
+          code: this.regForm.code,
+          phone: this.regForm.phone
         }
-      }).then( res => {
-        window.console.log(res)
+      }).then(res => {
+       if (res.data.code === 200) {
+            this.$message.success("短信验证码是:" + res.data.data.captcha);
+          }
       })
     }
   }
