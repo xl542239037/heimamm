@@ -58,6 +58,7 @@
 </template>
 
 <script>
+// import axios from "axios";
 export default {
   name: 'login',
   data () {
@@ -124,6 +125,19 @@ export default {
   },
   methods: {
     submitForm () {
+      if(this.form.checked == false){
+        this.$message.warning('亲您没勾选')
+      }else {
+        this.$refs.form.validate((valid) => {
+          if (valid) {
+           this.$message.warning('登录成功')
+          } else {
+            this.$message.error('内容错误')
+          }
+        })
+      }
+    },
+    dialogFormVisible(){
 
     }
   }

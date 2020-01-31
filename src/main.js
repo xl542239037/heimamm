@@ -10,6 +10,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import '../src/style/base.css'
 Vue.config.productionTip = false
 //注册
+window.console.log(process.env.VUE_APP_BASEURL)
 Vue.use(Element)
 new Vue({
   render: h => h(App),
