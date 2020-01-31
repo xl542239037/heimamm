@@ -76,7 +76,7 @@
 </template>
 
 <script>
-// import axios from "axios";
+import axios from "axios";
 export default {
   name: 'login',
   data () {
@@ -100,12 +100,10 @@ export default {
     return {
       // 表单的数据
       form: {
-        ruleForm: {
           phone: '',
           password: '',
           captcha: '',
           checked: false
-        }
       },
       rules: {
         // 手机号
@@ -149,7 +147,19 @@ export default {
       } else {
         this.$refs.form.validate(valid => {
           if (valid) {
-            this.$message.warning('登录成功')
+            // this.$message.warning('登录成功')
+            axios({
+              url:process.env.VUE_APP_BASEURL + '/login',
+              method:'post',
+              withCredentials:true,
+              data:{
+                phone:this.form.phone,
+                password:this.form.password,
+                captcha:this.form.captcha
+              }
+            }).then(res=>{
+              window.console.log(res)
+            })
           } else {
             this.$message.error('内容错误')
           }
