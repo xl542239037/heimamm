@@ -106,7 +106,8 @@
             <el-col :offset="1" :span="7">
               <img
                 class="register-captcha"
-                src="../../assets/captcha.jpg"
+                @click="changeRegCaptcha"
+                :src="regCaptchaUrl"
                 alt
               />
             </el-col>
@@ -202,7 +203,10 @@ export default {
       dialogFormVisible: false,
       //注册框宽度
       formLabelWidth: '60px',
-      imageUrl:''
+      //图像地址
+      imageUrl:'',
+      //注册验证码
+      regCaptchaUrl: process.env.VUE_APP_BASEURL + '/captcha?type=sendsms',
     }
   },
   methods: {
@@ -231,9 +235,21 @@ export default {
         })
       }
     },
+    //登录界面图像码
     changeCaptcha () {
       this.captchaURL =
         process.env.VUE_APP_BASEURL + '/captcha?type=login&' + Date.now() // 时间戳
+    },
+    //注册界面图形码
+    changeRegCaptcha(){
+      this.regCaptchaUrl = 
+      `${process.env.VUE_APP_BASEURL}/captcha?type=sendsms&${Date.now()}`
+    },
+    handleAvatarSuccess(){
+
+    },
+    beforeAvatarUpload(){
+
     }
   }
 }
