@@ -42,7 +42,12 @@
             </el-col>
             <el-col :span="6">
               <!-- 验证码图片 -->
-              <img class="captcha" @click="changeCaptcha" :src="captchaURL" alt />
+              <img
+                class="captcha"
+                @click="changeCaptcha"
+                :src="captchaURL"
+                alt
+              />
             </el-col>
           </el-row>
         </el-form-item>
@@ -66,17 +71,71 @@
         </el-form-item>
       </el-form>
     </div>
-    <img
-      class="login-pic"
-      
-      src="../../assets/login_banner_ele.png"
-      alt=""
-    />
+    <!-- 注册界面 -->
+    <el-dialog title="用户注册" :visible.sync="dialogFormVisible">
+      <el-form :model="form">
+        <el-form-item label="图像" :label-width="formLabelWidth">
+          <el-upload
+            class="avatar-uploader"
+            action="https://jsonplaceholder.typicode.com/posts/"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload"
+          >
+            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="昵称" :label-width="formLabelWidth">
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" :label-width="formLabelWidth">
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="手机" :label-width="formLabelWidth">
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" :label-width="formLabelWidth">
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="图形码" :label-width="formLabelWidth">
+          <el-row>
+            <el-col :span="16">
+              <el-input v-model="form.name" autocomplete="off"></el-input>
+            </el-col>
+            <el-col :offset="1" :span="7">
+              <img
+                class="register-captcha"
+                src="../../assets/captcha.jpg"
+                alt
+              />
+            </el-col>
+          </el-row>
+        </el-form-item>
+        <el-form-item label="验证码" :label-width="formLabelWidth">
+          <el-row>
+            <el-col :span="16">
+              <el-input v-model="form.name" autocomplete="off"></el-input>
+            </el-col>
+            <el-col :span="7" :offset="1">
+              <el-button>获取用户验证码</el-button>
+            </el-col>
+          </el-row>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogFormVisible = false"
+          >确 定</el-button
+        >
+      </div>
+    </el-dialog>
+    <img class="login-pic" src="../../assets/login_banner_ele.png" alt="" />
   </div>
 </template>
 
 <script>
-import axios from "axios";
+import axios from 'axios'
 export default {
   name: 'login',
   data () {
@@ -100,10 +159,10 @@ export default {
     return {
       // 表单的数据
       form: {
-          phone: '',
-          password: '',
-          captcha: '',
-          checked: false
+        phone: '',
+        password: '',
+        captcha: '',
+        checked: false
       },
       rules: {
         // 手机号
@@ -137,7 +196,13 @@ export default {
           }
         ]
       },
-      captchaURL: process.env.VUE_APP_BASEURL + '/captcha?type=login'
+      //验证码图片
+      captchaURL: process.env.VUE_APP_BASEURL + '/captcha?type=login',
+      //是否显示注册对话框
+      dialogFormVisible: false,
+      //注册框宽度
+      formLabelWidth: '60px',
+      imageUrl:''
     }
   },
   methods: {
@@ -149,15 +214,15 @@ export default {
           if (valid) {
             // this.$message.warning('登录成功')
             axios({
-              url:process.env.VUE_APP_BASEURL + '/login',
-              method:'post',
-              withCredentials:true,
-              data:{
-                phone:this.form.phone,
-                password:this.form.password,
-                captcha:this.form.captcha
+              url: process.env.VUE_APP_BASEURL + '/login',
+              method: 'post',
+              withCredentials: true,
+              data: {
+                phone: this.form.phone,
+                password: this.form.password,
+                captcha: this.form.captcha
               }
-            }).then(res=>{
+            }).then(res => {
               window.console.log(res)
             })
           } else {
@@ -166,10 +231,9 @@ export default {
         })
       }
     },
-    dialogFormVisible () {},
     changeCaptcha () {
       this.captchaURL =
-        process.env.VUE_APP_BASEURL + "/captcha?type=login&" + Date.now(); // 时间戳
+        process.env.VUE_APP_BASEURL + '/captcha?type=login&' + Date.now() // 时间戳
     }
   }
 }
