@@ -97,7 +97,7 @@
         <el-form-item label="邮箱" prop="email" :label-width="formLabelWidth">
           <el-input v-model="regForm.email" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="手机" :label-width="formLabelWidth">
+        <el-form-item label="手机" prop="phone" :label-width="formLabelWidth">
           <el-input v-model="regForm.phone" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item
@@ -145,7 +145,8 @@
 </template>
 
 <script>
-import axios from 'axios'
+// import axios from 'axios'
+import { login, sendsms, register } from '../../api/login.js'
 export default {
   name: 'login',
   data () {
@@ -310,21 +311,27 @@ export default {
       } else {
         this.$refs.form.validate(valid => {
           if (valid) {
-            // this.$message.warning('登录成功')
-            axios({
-              url: process.env.VUE_APP_BASEURL + '/login',
-              method: 'post',
-              withCredentials: true,
-              data: {
-                phone: this.form.phone,
-                password: this.form.password,
-                captcha: this.form.captcha
-              }
+            this.$message.warning('登录成功')
+            // axios({
+            //   url: process.env.VUE_APP_BASEURL + '/login',
+            //   method: 'post',
+            //   withCredentials: true,
+            //   data: {
+            //     phone: this.form.phone,
+            //     password: this.form.password,
+            //     captcha: this.form.captcha
+            //   }
+            // })
+            login({
+              phone: this.form.phone,
+              password: this.form.password,
+              captcha: this.form.captcha
             }).then(res => {
               window.console.log(res)
             })
           } else {
             this.$message.error('内容错误')
+            return false
           }
         })
       }
@@ -333,7 +340,33 @@ export default {
     submitRegForm () {
       this.$refs.regForm.validate(valid => {
         if (valid) {
-          this.$message.warning('注册成功')
+          // axios({
+          //   url: process.env.VUE_APP_BASEURL + '/register',
+          //   method: 'post',
+          //   data: {
+          //     username: this.regForm.username,
+          //     phone: this.regForm.phone,
+          //     email: this.regForm.email,
+          //     avatar: this.regForm.avatar,
+          //     password: this.regForm.password,
+          //     rcode: this.regForm.rcode
+          //   }
+          // })
+          register({
+            username: this.regForm.username,
+            phone: this.regForm.phone,
+            email: this.regForm.email,
+            avatar: this.regForm.avatar,
+            password: this.regForm.password,
+            rcode: this.regForm.rcode
+          }).then(res => {
+            //成功回调
+            // window.console.log(res)
+            if (res.data.code === 200) {
+              this.dialogFormVisible = false
+              this.$message.warning('注册成功')
+            }
+          })
         } else {
           this.$message.error('内容错误')
         }
@@ -352,6 +385,7 @@ export default {
     },
     handleAvatarSuccess (res, file) {
       window.console.log(res)
+      this.regForm.avatar = res.data.file_path
       this.imageUrl = URL.createObjectURL(file.raw)
     },
     beforeAvatarUpload () {},
@@ -371,14 +405,18 @@ export default {
             clearInterval(timeID)
           }
         }, 100)
-        axios({
-          url: process.env.VUE_APP_BASEURL + '/sendsms',
-          method: 'post',
-          withCredentials: true,
-          data: {
-            code: this.regForm.code,
-            phone: this.regForm.phone
-          }
+        // axios({
+        //   url: process.env.VUE_APP_BASEURL + '/sendsms',
+        //   method: 'post',
+        //   withCredentials: true,
+        //   data: {
+        //     code: this.regForm.code,
+        //     phone: this.regForm.phone
+        //   }
+        // })
+        sendsms({
+          code: this.regForm.code,
+          phone: this.regForm.phone
         }).then(res => {
           if (res.data.code === 200) {
             this.$message.success('短信验证码是:' + res.data.data.captcha)
