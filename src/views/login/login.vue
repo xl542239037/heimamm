@@ -119,7 +119,9 @@
               <el-input v-model="regForm.name" autocomplete="off"></el-input>
             </el-col>
             <el-col :span="7" :offset="1">
-              <el-button @click="getMessageCode">获取用户验证码</el-button>
+              <el-button :disabled="time != 0" @click="getMessageCode">
+                {{ time == 0 ? "获取用户验证码" : `还有${time}s继续获取` }}
+              </el-button>
             </el-col>
           </el-row>
         </el-form-item>
@@ -211,7 +213,9 @@ export default {
       //图像地址
       imageUrl: '',
       //注册验证码
-      regCaptchaUrl: process.env.VUE_APP_BASEURL + '/captcha?type=sendsms'
+      regCaptchaUrl: process.env.VUE_APP_BASEURL + '/captcha?type=sendsms',
+      //倒计时
+      time: 0
     }
   },
   methods: {
@@ -254,26 +258,35 @@ export default {
     handleAvatarSuccess () {},
     beforeAvatarUpload () {},
     getMessageCode () {
-      const ref = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/
-      if (!ref.test(this.regForm.phone)) {
-        return this.$message.error('老铁手机号错误')
-      }
-      if (this.regForm.code == '' || this.regForm.code.length != 4) {
-        return this.$message.error('老铁验证码错误')
-      }
-      axios({
-        url: process.env.VUE_APP_BASEURL + '/sendsms',
-        method: 'post',
-        withCredentials: true,
-        data: {
-          code: this.regForm.code,
-          phone: this.regForm.phone
+      if (this.time == 0) {
+        const ref = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/
+        if (!ref.test(this.regForm.phone)) {
+          return this.$message.error('老铁手机号错误')
         }
-      }).then(res => {
-       if (res.data.code === 200) {
-            this.$message.success("短信验证码是:" + res.data.data.captcha);
+        if (this.regForm.code == '' || this.regForm.code.length != 4) {
+          return this.$message.error('老铁验证码错误')
+        }
+        this.time =60
+        let timeID = setInterval(() => {
+          this.time--
+          if (this.time == 0) {
+            clearInterval(timeID)
           }
-      })
+        },100)
+        axios({
+          url: process.env.VUE_APP_BASEURL + '/sendsms',
+          method: 'post',
+          withCredentials: true,
+          data: {
+            code: this.regForm.code,
+            phone: this.regForm.phone
+          }
+        }).then(res => {
+          if (res.data.code === 200) {
+            this.$message.success('短信验证码是:' + res.data.data.captcha)
+          }
+        })
+      }
     }
   }
 }
