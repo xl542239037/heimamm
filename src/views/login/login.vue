@@ -77,8 +77,9 @@
         <el-form-item label="图像" :label-width="formLabelWidth">
           <el-upload
             class="avatar-uploader"
-            action="https://jsonplaceholder.typicode.com/posts/"
+            :action="uploadUrl"
             :show-file-list="false"
+            name="image"
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload"
           >
@@ -120,7 +121,7 @@
             </el-col>
             <el-col :span="7" :offset="1">
               <el-button :disabled="time != 0" @click="getMessageCode">
-                {{ time == 0 ? "获取用户验证码" : `还有${time}s继续获取` }}
+                {{ time == 0 ? '获取用户验证码' : `还有${time}s继续获取` }}
               </el-button>
             </el-col>
           </el-row>
@@ -215,7 +216,9 @@ export default {
       //注册验证码
       regCaptchaUrl: process.env.VUE_APP_BASEURL + '/captcha?type=sendsms',
       //倒计时
-      time: 0
+      time: 0,
+      //上传图像的地址
+      uploadUrl: process.env.VUE_APP_BASEURL + '/uploads'
     }
   },
   methods: {
@@ -255,7 +258,10 @@ export default {
         process.env.VUE_APP_BASEURL
       }/captcha?type=sendsms&${Date.now()}`
     },
-    handleAvatarSuccess () {},
+    handleAvatarSuccess (res, file) {
+      window.console.log(res)
+      this.imageUrl = URL.createObjectURL(file.raw)
+    },
     beforeAvatarUpload () {},
     getMessageCode () {
       if (this.time == 0) {
@@ -266,13 +272,13 @@ export default {
         if (this.regForm.code == '' || this.regForm.code.length != 4) {
           return this.$message.error('老铁验证码错误')
         }
-        this.time =60
+        this.time = 60
         let timeID = setInterval(() => {
           this.time--
           if (this.time == 0) {
             clearInterval(timeID)
           }
-        },100)
+        }, 100)
         axios({
           url: process.env.VUE_APP_BASEURL + '/sendsms',
           method: 'post',
@@ -305,7 +311,7 @@ export default {
     rgba(20, 147, 250, 1),
     rgba(1, 198, 250, 1)
   );
-  height: 100%;
+  height: 788px;
   .form-box {
     width: 478px;
     height: 550px;
