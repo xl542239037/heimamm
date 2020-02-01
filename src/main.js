@@ -8,6 +8,7 @@ import Element from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 // 导入全局样式
 import '../src/style/base.css'
+
 Vue.config.productionTip = false
 //注册
 window.console.log(process.env.VUE_APP_BASEURL)
