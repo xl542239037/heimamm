@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import {getToken} from "../../utils/token"
+// import {getToken} from "../../utils/token"
 export default {
   name: "index",
   data() {
@@ -58,12 +58,12 @@ export default {
       isCollapse: false
     }
   },
-  beforeCreate(){
-    if (!getToken()) {
-      this.$message.error("小样，没登录就要来首页，滑稽！");
-      this.$router.push("/login")
-    }
-  },
+  // beforeCreate(){
+  //   if (!getToken()) {
+  //     this.$message.error("小样，没登录就要来首页，滑稽！");
+  //     this.$router.push("/login")
+  //   }
+  // },
   created(){
     window.console.log(this.$route)
   }

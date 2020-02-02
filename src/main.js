@@ -8,13 +8,17 @@ import Element from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 // 导入全局样式
 import '../src/style/base.css'
-
+//导入仓库
+import store from './store/store'
 Vue.config.productionTip = false
 //注册
 window.console.log(process.env.VUE_APP_BASEURL)
+
 Vue.use(Element)
+
 new Vue({
   render: h => h(App),
   //挂载到Vue实例上 router
-  router
+  router,
+  store
 }).$mount('#app')
