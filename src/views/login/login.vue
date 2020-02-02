@@ -327,6 +327,10 @@ export default {
               password: this.form.password,
               captcha: this.form.captcha
             }).then(res => {
+              if (res.data.code ===200) {
+               localStorage.setItem("token",res.data.data.token)
+                this.$router.push("/index")
+              }
               window.console.log(res)
             })
           } else {

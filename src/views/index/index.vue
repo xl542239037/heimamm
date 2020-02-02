@@ -49,12 +49,19 @@
 </template>
 
 <script>
+import {getToken} from "../../utils/token"
 export default {
   name: "index",
   data() {
     return {
       // 是否折叠
       isCollapse: false
+    }
+  },
+  beforeCreate(){
+    if (!getToken()) {
+      this.$message.error("小样，没登录就要来首页，滑稽！");
+      this.$router.push("/login")
     }
   },
   created(){
