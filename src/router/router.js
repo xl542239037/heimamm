@@ -15,6 +15,10 @@ import question from '../views/index/question/question.vue'
 //企业
 import enterprise from '../views/index/enterprise/enterprise.vue'
 
+// 导入 token工具函数
+import { getToken } from "../utils/token.js";
+import { Message } from "element-ui";
+// import {userInfo} from '../api/user'
 const routes = [
   //登录路由
   {
@@ -56,6 +60,17 @@ const routes = [
 ]
 const router = new VueRouter({
   routes
+})
+const whitepaths = ['/login'];
+router.beforeEach((to, from, next) => {
+ if (whitepaths.includes(to.path.toLocaleLowerCase())===false) {
+   if (!getToken()) {
+    Message.error("兄弟，请先登录，在访问！！！！")
+    next('/login')
+   }else {
+     next()
+   }
+ }
 })
 Vue.use(VueRouter)
 export default router
