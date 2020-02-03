@@ -19,7 +19,7 @@ import enterprise from '../views/index/enterprise/enterprise.vue'
 import { getToken, removeToken } from '../utils/token.js'
 import { Message } from 'element-ui'
 import { userInfo } from '../api/user'
-// import {userInfo} from '../api/user'
+import store from '../store/store';
 const routes = [
   //登录路由
   {
@@ -74,6 +74,8 @@ router.beforeEach((to, from, next) => {
         // 如果获取成功 保存用户信息
         if (res.data.code === 200) {
           // token 是对的 放走
+          store.state.userInfor = res.data.data;
+          store.state.userInfor.avatar = process.env.VUE_APP_BASURL + "/" + store.state.userInfor.avatar
           next()
         } else if (res.data.code === 206) {
           // 提示用户

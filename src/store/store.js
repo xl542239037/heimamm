@@ -4,9 +4,14 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 //创建仓库
 const store = new Vuex.Store({
-    state :{
-        userInfor : []
+  state: {
+    userInfor: []
+  },
+  mutations: {
+    changeUserInfo (state, newUserInfo) {
+      state.userInfor = newUserInfo
     }
+  }
 })
 
 export default store

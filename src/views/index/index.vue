@@ -10,14 +10,19 @@
       </div>
       <div class="right">
         <img class="user-icon" src="../../assets/classflower.jpg" alt="" />
-        <span class="user-name">李达,您好</span>
-        <el-button type="primary" size="small">退出</el-button>
+        <span class="user-name"> 小龙 ,您好</span>
+        <el-button type="primary" @click="logout" size="small">退出</el-button>
       </div>
     </el-header>
     <el-container>
       <el-aside width="auto" class="my-aside">
         <!-- 导航菜单 -->
-        <el-menu router :default-active="$route.path" :collapse="isCollapse" class="el-menu-vertical-demo">
+        <el-menu
+          router
+          :default-active="$route.path"
+          :collapse="isCollapse"
+          class="el-menu-vertical-demo"
+        >
           <el-menu-item index="/index/chart">
             <i class="el-icon-pie-chart"></i>
             <span slot="title">数据概览</span>
@@ -49,10 +54,11 @@
 </template>
 
 <script>
-// import {getToken} from "../../utils/token"
+import {removeToken} from "../../utils/token"
+import {userLogout} from '../../api/user'
 export default {
-  name: "index",
-  data() {
+  name: 'index',
+  data () {
     return {
       // 是否折叠
       isCollapse: false
@@ -64,10 +70,45 @@ export default {
   //     this.$router.push("/login")
   //   }
   // },
-  created(){
+  created () {
     window.console.log(this.$route)
+  },
+  methods:{
+     logout() {
+      // 问问用户
+      this.$confirm("你真的要离开我这个网站吗?", "友情提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          // 确定
+          userLogout().then(res=>{
+            if(res.data.code===200){
+              // token
+              removeToken()
+              // 用户信息
+              // this.$store.state.userInfo = {}
+              // 去登录页
+              this.$router.push("/login")
+            }
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "你是个好人！"
+          });
+        });
+    }
+  },
+  //计算属性 保存用户
+  computed:{
+    userInfo(){
+      return this.$store.state.userInfo
+    }
   }
-};
+}
 </script>
 
 <style lang="less">
