@@ -13,7 +13,8 @@ import store from './store/store'
 Vue.config.productionTip = false
 //注册
 window.console.log(process.env.VUE_APP_BASEURL)
-
+//全局过滤器
+import './filters/filters'
 Vue.use(Element)
 
 new Vue({

@@ -19,7 +19,7 @@ import enterprise from '../views/index/enterprise/enterprise.vue'
 import { getToken, removeToken } from '../utils/token.js'
 import { Message } from 'element-ui'
 import { userInfo } from '../api/user'
-import store from '../store/store';
+import store from '../store/store'
 const routes = [
   //登录路由
   {
@@ -30,26 +30,41 @@ const routes = [
   {
     path: '/index',
     component: index,
+    meta: {
+      power: ['管理员', '学生', '老师']
+    },
     children: [
       //学科
       {
         path: 'subject',
-        component: subject
+        component: subject,
+        meta: {
+          power: ['管理员', '老师']
+        }
       },
       //用户
       {
         path: 'user',
-        component: user
+        component: user,
+        meta: {
+          power: ['管理员']
+        }
       },
       //数据
       {
         path: 'chart',
-        component: chart
+        component: chart,
+        meta: {
+          power: ['管理员','老师']
+        }
       },
       //题库
       {
         path: 'question',
-        component: question
+        component: question,
+        meta: {
+          power: ['学生']
+        }
       },
       //企业
       {
@@ -74,8 +89,9 @@ router.beforeEach((to, from, next) => {
         // 如果获取成功 保存用户信息
         if (res.data.code === 200) {
           // token 是对的 放走
-          store.state.userInfor = res.data.data;
-          store.state.userInfor.avatar = process.env.VUE_APP_BASURL + "/" + store.state.userInfor.avatar
+          store.state.userInfor = res.data.data
+          store.state.userInfor.avatar =
+            process.env.VUE_APP_BASURL + '/' + store.state.userInfor.avatar
           next()
         } else if (res.data.code === 206) {
           // 提示用户
